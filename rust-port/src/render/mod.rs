@@ -9,3 +9,5 @@ pub mod cursor;
 pub mod first_run;
 
 pub mod scores;
+
+pub mod options;

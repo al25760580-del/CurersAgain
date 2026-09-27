@@ -261,6 +261,56 @@ fn draw_startup(
 /// Ordinary startup with extracted audio; no unlock overlay or playable submenus.
 /// F6 restarts visual boot; confirm during boot skips without confirming a title selection.
 #[allow(non_snake_case)]
+/// Apply what a confirmed option asks for. The original's `Confirmed` only
+/// reports; the host applies, so the room itself stays testable without SDL.
+///
+/// Nothing here reaches the server: settings are written to the port's own
+/// profile directory and the resolution only changes the port's render target.
+fn apply_options_action(
+    action: holocure_core_port::scenes::options::Action,
+    slot: &mut Option<holocure_core_port::scenes::options::Options>,
+    menu: &mut TitleMenu,
+    profile_directory: &Path,
+    manager: &mut holocure_core_port::first_run::GameManager,
+    pending_resolution: &mut Option<usize>,
+    pending_language: &mut Option<String>,
+) {
+    use holocure_core_port::scenes::options::Action;
+    let Some(options) = slot.as_mut() else {
+        return;
+    };
+    match action {
+        Action::None => {}
+        Action::Save => save_options(options, manager, profile_directory),
+        Action::ApplyResolution(_, _) => {
+            *pending_resolution = Some(options.selected_resolution);
+            save_options(options, manager, profile_directory);
+        }
+        Action::SetLanguage(id) => {
+            *pending_language = Some(id);
+            save_options(options, manager, profile_directory);
+        }
+        Action::Exit => {
+            menu.input(Input::Back);
+            *slot = None;
+        }
+    }
+}
+
+/// Write the room's settings back to the profile and report the result. The
+/// original calls `SaveSettings` at the same points.
+fn save_options(
+    options: &mut holocure_core_port::scenes::options::Options,
+    manager: &mut holocure_core_port::first_run::GameManager,
+    profile_directory: &Path,
+) {
+    manager.settings = options.settings.clone();
+    match options.settings.SaveSettings(profile_directory) {
+        Ok(()) => println!("OPTIONS_SAVED"),
+        Err(e) => eprintln!("OPTIONS_SAVE_FAILED {e}"),
+    }
+}
+
 fn main() -> Result<(), String> {
     let root = std::env::args()
         .nth(1)
@@ -434,6 +484,11 @@ fn main() -> Result<(), String> {
     let mut scores_assets =
         holocure_core_port::render::scores::ScoresAssets::load(&tc, &root, &scores_config)?;
     let mut hi_scores: Option<holocure_core_port::scenes::scores::HiScores> = None;
+    let mut options_assets =
+        holocure_core_port::render::options::OptionsAssets::load(&tc, &root)?;
+    let mut options_room: Option<holocure_core_port::scenes::options::Options> = None;
+    let mut options_pending_resolution: Option<usize> = None;
+    let mut options_pending_language: Option<String> = None;
     let scores_clock = Instant::now();
     let mut events = sdl.event_pump()?;
     let mut menu = TitleMenu::ready_for_reference();
@@ -582,6 +637,7 @@ fn main() -> Result<(), String> {
         // not pass through the replacement room or confirm Play in the same batch.
         let init_was_active = GameManager.active();
         let was_scores = menu.screen == Screen::Scores;
+        let was_options = menu.screen == Screen::Options;
         let mut init_confirm = false;
         let input_room = startup.room;
         let mut boot_enter_pressed = false;
@@ -742,6 +798,94 @@ fn main() -> Result<(), String> {
                     if let Some(a) = audio.as_mut() {
                         a.cue(holocure_core_port::audio::Cue::Back);
                     }
+                }
+                continue;
+            }
+            if menu.screen == Screen::Options && !was_options {
+                continue;
+            }
+            if was_options && menu.screen != Screen::Options {
+                options_room = None;
+                continue;
+            }
+            if was_options {
+                // Each arm borrows the room only for its own statement, so the
+                // helper can take the slot itself and clear it on exit.
+                let mut with = |f: &mut dyn FnMut(&mut holocure_core_port::scenes::options::Options)| {
+                    if let Some(room) = options_room.as_mut() {
+                        f(room);
+                    }
+                };
+                match &e {
+                    Event::Quit { .. } => break 'running,
+                    Event::KeyDown {
+                        keycode: Some(key),
+                        repeat: false,
+                        ..
+                    } => match *key {
+                        Keycode::Escape | Keycode::LShift | Keycode::RShift => {
+                            let mut leaving = false;
+                            with(&mut |room| {
+                                leaving = room.return_menu()
+                                    == holocure_core_port::scenes::options::Action::Exit;
+                            });
+                            if leaving {
+                                menu.input(Input::Back);
+                                options_room = None;
+                            }
+                        }
+                        Keycode::Up => with(&mut |room| room.select_up()),
+                        Keycode::Down => with(&mut |room| room.select_down()),
+                        Keycode::Left => with(&mut |room| room.select_left()),
+                        Keycode::Right => with(&mut |room| room.select_right()),
+                        Keycode::Return | Keycode::Space | Keycode::Z => {
+                            let mut action = holocure_core_port::scenes::options::Action::None;
+                            with(&mut |room| action = room.confirmed());
+                            apply_options_action(
+                                action,
+                                &mut options_room,
+                                &mut menu,
+                                &profile_directory,
+                                &mut GameManager,
+                                &mut options_pending_resolution,
+                                &mut options_pending_language,
+                            );
+                        }
+                        Keycode::F12 => shot = true,
+                        _ => {}
+                    },
+                    Event::MouseWheel { y, .. } => with(&mut |room| room.scroll(*y > 0)),
+                    Event::MouseMotion { x, y, .. } => with(&mut |room| {
+                        if let Some(i) = room.row_at(*x, *y) {
+                            if room.current_option != i {
+                                room.current_option = i;
+                            }
+                        }
+                    }),
+                    Event::MouseButtonDown { x, y, .. } => {
+                        let mut action = holocure_core_port::scenes::options::Action::None;
+                        let mut clicked = false;
+                        with(&mut |room| match room.row_at(*x, *y) {
+                            Some(i) if i != room.current_option => room.current_option = i,
+                            Some(_) => {
+                                action = room.confirmed();
+                                clicked = true;
+                            }
+                            None => room.changed_settings |= room.slider_click(*x),
+                        });
+                        if clicked {
+                            apply_options_action(
+                                action,
+                                &mut options_room,
+                                &mut menu,
+                                &profile_directory,
+                                &mut GameManager,
+                                &mut options_pending_resolution,
+                                &mut options_pending_language,
+                            );
+                        }
+                    }
+                    _ => {}
                 }
                 continue;
             }
@@ -963,6 +1107,10 @@ fn main() -> Result<(), String> {
                 GameManager.canType
             );
         }
+        if let Some(id) = options_pending_language.take() {
+            GameManager.settings.CurrentLanguage = id.clone();
+            println!("OPTIONS_LANGUAGE {id}");
+        }
         if reload_language
             || GameManager.settings.CurrentLanguage != init_room_assets.language.manifest.id
         {
@@ -1054,11 +1202,36 @@ fn main() -> Result<(), String> {
                     if menu.screen == Screen::Exit {
                         break 'running;
                     }
-                    if menu.screen != Screen::Scores {
+                    if menu.screen != Screen::Scores && menu.screen != Screen::Options {
                         menu.input(Input::Back);
                     }
                 }
             }
+        }
+        if let Some(index) = options_pending_resolution.take() {
+            let (w, h) = holocure_core_port::scenes::options::RESOLUTIONS[index];
+            high_resolution = (w, h) == (1280, 720);
+            room = tc
+                .create_texture_target(PixelFormatEnum::RGBA8888, w, h)
+                .map_err(|e| e.to_string())?;
+            println!("OPTIONS_RESOLUTION {}x{}", w, h);
+        }
+        if let Some(room) = options_room.as_mut() {
+            room.update();
+        }
+        if menu.screen == Screen::Options && options_room.is_none() {
+            // The original's settings room offers exactly two languages even
+            // though it ships four packs, so the row and the wrap are the same.
+            let mut languages: Vec<String> = Vec::new();
+            for id in ["eng", "jp"] {
+                if init_room_assets.languages.iter().any(|l| l.id == id) {
+                    languages.push(id.to_string());
+                }
+            }
+            options_room = Some(holocure_core_port::scenes::options::Options::new(
+                GameManager.settings.clone(),
+                languages,
+            ));
         }
         if menu.screen == Screen::Scores && hi_scores.is_none() {
             hi_scores = Some(create_scores_scene(
@@ -1152,6 +1325,16 @@ fn main() -> Result<(), String> {
                 c.set_scale(scale, scale)?;
                 c.set_draw_color(Color::BLACK);
                 c.clear();
+                if let Some(room) = options_room.as_ref() {
+                    return holocure_core_port::render::options::draw(
+                        c,
+                        &mut font,
+                        &mut scores_big,
+                        &mut options_assets,
+                        room,
+                        &init_room_assets.language,
+                    );
+                }
                 if let Some(scene) = hi_scores.as_ref() {
                     return holocure_core_port::render::scores::draw(
                         c,
@@ -1335,7 +1518,7 @@ fn main() -> Result<(), String> {
             let mut sorted = intervals.clone();
             sorted.sort_by(f64::total_cmp);
             let percentile = |q: f64| sorted[((sorted.len() - 1) as f64 * q).round() as usize];
-            let status = serde_json::json!({"schema":1,"scene":if menu.screen==Screen::Scores{"rm_HiScores (8)"}else if GameManager.active(){"rm_InitRoom (0)"}else{startup.scene_name()},"initStep":GameManager.initStep,"readyToStart":GameManager.settings.readyToStart,"startup_lifetime":startup.lifetime,"current_option":if let Some(scene)=hi_scores.as_ref(){scene.currentOption}else if GameManager.active(){GameManager.currentOption}else{menu.current_option},"audio_enabled":audio.is_some(),"renderer":renderer_name,"vsync":vsync,"fps":fps,"p95_ms":percentile(0.95),"p99_ms":percentile(0.99),"max_ms":sorted.last(),"simulation_step":frames,"interpolation":interpolate,"paused":paused,"room_target":if high_resolution{"1280x720"}else{"640x360"},"effects":effects.active.len(),"effect_spawn_mode":"captured schedule replay, not original RNG","discarded_wall_time_s":dropped_time});
+            let status = serde_json::json!({"schema":1,"scene":if menu.screen==Screen::Options{"rm_Title (3) / obj_Options"}else if menu.screen==Screen::Scores{"rm_HiScores (8)"}else if GameManager.active(){"rm_InitRoom (0)"}else{startup.scene_name()},"initStep":GameManager.initStep,"readyToStart":GameManager.settings.readyToStart,"startup_lifetime":startup.lifetime,"current_option":if let Some(room)=options_room.as_ref(){room.absolute_option()}else if let Some(scene)=hi_scores.as_ref(){scene.currentOption}else if GameManager.active(){GameManager.currentOption}else{menu.current_option},"audio_enabled":audio.is_some(),"renderer":renderer_name,"vsync":vsync,"fps":fps,"p95_ms":percentile(0.95),"p99_ms":percentile(0.99),"max_ms":sorted.last(),"simulation_step":frames,"interpolation":interpolate,"paused":paused,"room_target":if high_resolution{"1280x720"}else{"640x360"},"effects":effects.active.len(),"effect_spawn_mode":"captured schedule replay, not original RNG","discarded_wall_time_s":dropped_time});
             fs::write("run-logs/rust-scene-status.json.tmp", status.to_string())
                 .map_err(|e| e.to_string())?;
             fs::rename(
