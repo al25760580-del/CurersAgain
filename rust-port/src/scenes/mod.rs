@@ -5,3 +5,5 @@ pub mod title;
 pub mod scores;
 
 pub mod menu_triangles;
+
+pub mod options;

@@ -9,6 +9,26 @@ use std::{
     path::{Path, PathBuf},
 };
 
+const DEFAULT_THE_BUTTONS: [&str; 7] = [
+    "SPACE",
+    "SHIFT",
+    "A",
+    "D",
+    "W",
+    "S",
+    "CTRL",
+];
+
+const DEFAULT_CONTROLLER_BUTTONS: [&str; 7] = [
+    "gp_face1",
+    "gp_shoulderlb",
+    "gp_face2",
+    "gp_shoulderrb",
+    "gp_start",
+    "gp_select",
+    "gp_face3",
+];
+
 #[derive(Clone, Debug)]
 pub struct Settings {
     pub readyToStart: bool,
@@ -18,6 +38,38 @@ pub struct Settings {
     pub hiscorenames: bool,
     /// Original field is BOOLEAN, despite its name.
     pub hiscoreName: bool,
+
+    // Volumes and effect strengths. Stored as 0..1 fractions.
+    pub music_volume: f64,
+    pub sound_volume: f64,
+    /// Attack telegraph opacity; the original keeps it in 0.3..=1.0.
+    pub attack_alpha: f64,
+    pub vibration: f64,
+    /// Index into the resolution list, not a pixel size.
+    pub resolution: f64,
+
+    // HUD and effect toggles. The original stores these as 1.0 / 0.0 numbers
+    // even though they behave as booleans, so they stay numeric here.
+    pub hide_full_hp: f64,
+    pub show_skill_radius: f64,
+    pub port_display: f64,
+    pub above_hp: f64,
+    pub show_hp_val: f64,
+    pub show_hud_hp: f64,
+
+    // Boolean toggles, exactly as the original stores them.
+    pub screen_shake: bool,
+    pub light_fx: bool,
+    pub show_stamps: bool,
+    pub hh_messages: bool,
+    pub fullscreen: bool,
+    pub show_damage_text: bool,
+
+    // Key names, in the original's own spelling. Both lists carry one entry
+    // more than the rooms read; the extra is preserved rather than truncated.
+    pub the_buttons: Vec<String>,
+    pub controller_buttons: Vec<String>,
+
     extra: Value,
 }
 impl Default for Settings {
@@ -28,6 +80,33 @@ impl Default for Settings {
             username: "Player".into(),
             hiscorenames: true,
             hiscoreName: false,
+
+            // Values observed in the original's own settings.json on this
+            // machine; see docs/measured-settings.md. First-run defaults are
+            // not yet verified.
+            music_volume: 0.4,
+            sound_volume: 0.6,
+            attack_alpha: 1.0,
+            vibration: 1.0,
+            resolution: 1.0,
+            hide_full_hp: 1.0,
+            show_skill_radius: 1.0,
+            port_display: 1.0,
+            above_hp: 1.0,
+            show_hp_val: 1.0,
+            show_hud_hp: 1.0,
+            screen_shake: true,
+            light_fx: true,
+            show_stamps: true,
+            hh_messages: true,
+            fullscreen: true,
+            show_damage_text: true,
+            the_buttons: DEFAULT_THE_BUTTONS.iter().map(|s| s.to_string()).collect(),
+            controller_buttons: DEFAULT_CONTROLLER_BUTTONS
+                .iter()
+                .map(|s| s.to_string())
+                .collect(),
+
             extra: json!({}),
         }
     }
@@ -59,12 +138,73 @@ impl Settings {
                 return Err(format!("Settings field {k} must be text"));
             }
         }
+
+        // Every other field the original writes. Their types come from the
+        // original's own settings.json: volumes and the HUD toggles are numbers,
+        // the effect toggles are booleans, and the two key lists are text arrays.
+        for k in ["musicVolume", "soundVolume", "attackAlpha", "vibration", "Resolution", "hideFullHP", "showSkillRadius", "portDisplay", "aboveHP", "showHPVal", "showHUDHP"] {
+            if v.get(k).is_some_and(|x| !x.is_number()) {
+                return Err(format!("Settings field {k} must be a number"));
+            }
+        }
+        for k in ["screenShake", "lightFX", "showStamps", "hhMessages", "fullscreen", "showDamageText"] {
+            if v.get(k).is_some_and(|x| !x.is_boolean()) {
+                return Err(format!("Settings field {k} must be boolean"));
+            }
+        }
+        for k in ["theButtons", "controllerButtons"] {
+            match v.get(k) {
+                None => {}
+                Some(x) => match x.as_array() {
+                    None => return Err(format!("Settings field {k} must be a list")),
+                    Some(a) => {
+                        for e in a {
+                            if !e.is_string() {
+                                return Err(format!("Settings field {k} must be a list of text"));
+                            }
+                        }
+                    }
+                },
+            }
+        }
+
+        // A missing key reads as undefined in the original's own loader, which is
+        // falsy in a condition and zero in arithmetic. These readers reproduce
+        // that instead of falling back to the first-run defaults.
+        let f = |key: &str| v[key].as_f64().unwrap_or(0.0);
+        let b = |key: &str| v[key].as_bool().unwrap_or(false);
+        let text_list = |key: &str| -> Vec<String> {
+            v.get(key)
+                .and_then(|x| x.as_array())
+                .map(|a| a.iter().filter_map(|e| e.as_str().map(str::to_string)).collect())
+                .unwrap_or_default()
+        };
+
         let mut s = Self::default();
         s.readyToStart = v["readyToStart"].as_bool().unwrap_or(false);
         s.CurrentLanguage = v["CurrentLanguage"].as_str().unwrap_or("eng").into();
         s.username = v["username"].as_str().unwrap_or("Player").into();
         s.hiscorenames = v["hiscorenames"].as_bool().unwrap_or(true);
         s.hiscoreName = v["hiscoreName"].as_bool().unwrap_or(false);
+        s.music_volume = f("musicVolume");
+        s.sound_volume = f("soundVolume");
+        s.attack_alpha = f("attackAlpha");
+        s.vibration = f("vibration");
+        s.resolution = f("Resolution");
+        s.hide_full_hp = f("hideFullHP");
+        s.show_skill_radius = f("showSkillRadius");
+        s.port_display = f("portDisplay");
+        s.above_hp = f("aboveHP");
+        s.show_hp_val = f("showHPVal");
+        s.show_hud_hp = f("showHUDHP");
+        s.screen_shake = b("screenShake");
+        s.light_fx = b("lightFX");
+        s.show_stamps = b("showStamps");
+        s.hh_messages = b("hhMessages");
+        s.fullscreen = b("fullscreen");
+        s.show_damage_text = b("showDamageText");
+        s.the_buttons = text_list("theButtons");
+        s.controller_buttons = text_list("controllerButtons");
         if !CheckName(&s.username) {
             s.readyToStart = false;
         }
@@ -83,6 +223,25 @@ impl Settings {
             ("hiscorenames", json!(self.hiscorenames)),
             ("hiscoreName", json!(self.hiscoreName)),
             ("portSchema", json!(1)),
+            ("musicVolume", json!(self.music_volume)),
+            ("soundVolume", json!(self.sound_volume)),
+            ("attackAlpha", json!(self.attack_alpha)),
+            ("vibration", json!(self.vibration)),
+            ("Resolution", json!(self.resolution)),
+            ("hideFullHP", json!(self.hide_full_hp)),
+            ("showSkillRadius", json!(self.show_skill_radius)),
+            ("portDisplay", json!(self.port_display)),
+            ("aboveHP", json!(self.above_hp)),
+            ("showHPVal", json!(self.show_hp_val)),
+            ("showHUDHP", json!(self.show_hud_hp)),
+            ("screenShake", json!(self.screen_shake)),
+            ("lightFX", json!(self.light_fx)),
+            ("showStamps", json!(self.show_stamps)),
+            ("hhMessages", json!(self.hh_messages)),
+            ("fullscreen", json!(self.fullscreen)),
+            ("showDamageText", json!(self.show_damage_text)),
+            ("theButtons", json!(self.the_buttons)),
+            ("controllerButtons", json!(self.controller_buttons)),
         ] {
             v[k] = x;
         }

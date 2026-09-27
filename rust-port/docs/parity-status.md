@@ -25,6 +25,10 @@
 
 ## Not done
 
+- `rm_Options`: the state machine is ported and unit tested against the
+  original's `obj_Options` code, but the room is not drawn and the title's
+  Settings icon does not open it yet. No capture of the original's settings
+  screen exists, so no drawing is claimed.
 - Particles, sparkles, shaders and screen effects.
 - The character grid and equipment/run-detail panels.
 - Transitions and tween timing (only endpoints are measured).
