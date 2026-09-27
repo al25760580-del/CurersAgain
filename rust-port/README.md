@@ -52,6 +52,32 @@ placeholder art and is not the Scores screen.
   and logged (`remote_write=skipped`).
 - The original game installation, saves and mods are never modified.
 
+## Parity captures
+
+Both images were taken from live windows with `XGetImage`; no game memory was
+read, and all text is English on both sides. The original shows English because
+emptying `SavedLanguage` makes it fall back to its base language; the port loads
+`languages/eng/texts.toml`.
+
+### Title screen `rm_Title (3)`
+
+![Title screen, original Steam build beside the Rust port](docs/parity/parity-title.png)
+
+The eight title icons sit at logical `x = 170 + i*50` with the row at logical
+`y = 305`: measured on the original and reproduced here.
+
+### Scores room `rm_HiScores (8)` - STAGE 1 / AMELIA WATSON / All Time
+
+![Scores room, original Steam build beside the Rust port](docs/parity/parity-scores.png)
+
+Both sides show the **same** rows from the **same** official Cloud Firestore
+backend: the original through its own Firebase extension, the port through the
+read-only client in `src/score_server.rs` (`SCORES_SERVER_READ_OK rows=99`).
+
+Not shown as parity: triangles replay a captured schedule because the original
+RNG sequence is not recovered, particles/shaders/sparkles are incomplete, and the
+character-select room is not ported. `docs/parity-status.md` keeps the honest list.
+
 ## Tests
 
 ```sh
