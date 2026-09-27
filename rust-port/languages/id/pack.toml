@@ -1,0 +1,9 @@
+schema = 1
+id = "id"
+name = "Indonesian"
+native_name = "Bahasa Indonesia"
+text_format = "plain"
+texts = "texts.toml"
+order = 2
+fallback = "eng"
+# Translation not yet provided: uses the English pack.

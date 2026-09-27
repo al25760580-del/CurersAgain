@@ -1,0 +1,25 @@
+schema = 1
+id = "eng"
+name = "English"
+native_name = "English"
+text_format = "plain"
+texts = "texts.toml"
+order = 0
+
+[font]
+custom = false
+atlas = "jpFont.png"
+metrics = "glyphs.toml"
+fallback_to_parent = false
+
+[big_font]
+custom=false
+atlas="jpFont_Big.png"
+metrics="jpFont_Big.toml"
+fallback_to_parent=false
+
+[tiny_font]
+custom=false
+atlas="tinyFont.png"
+metrics="tinyFont.toml"
+fallback_to_parent=false

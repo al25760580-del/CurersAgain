@@ -1,0 +1,81 @@
+# UTF-8. Plain text, explicit \n line breaks. Whitespace is significant.
+schema = 1
+text_format = "plain"
+
+[strings]
+"first_run.language" = "Idioma"
+"first_run.name" = "Nombre del jugador"
+"first_run.named_player" = "Nombre del jugador: {username}"
+"first_run.show_prompt" = "¿Mostrar nombres de otros jugadores?"
+"first_run.show" = "Mostrar"
+"first_run.hide" = "Ocultar"
+"first_run.allow" = "Acepto"
+"first_run.decline" = "No acepto"
+"first_run.start" = "¡Comenzar!"
+"first_run.restart" = "Reiniciar"
+"title.play" = "Jugar"
+"title.settings" = "Configuración"
+"title.quit" = "Salir"
+"title.credits" = "Créditos"
+
+"scores.all_time" = "Todos los tiempos"
+"scores.daily" = "Diario"
+"scores.empty" = "No hay puntuaciones con estos filtros."
+"scores.check" = "Consultar"
+"scores.my_score" = "Mi puntuación"
+"scores.quit" = "Volver"
+"scores.rank" = "Puesto"
+"scores.score_value" = "Puntos: {score}"
+"scores.run_values" = "TIEMPO: {time}  NV: {level}"
+"scores.anonymous" = "Anónimo"
+"scores.controls" = "PÁGINA: IZQ/DER | ACEPTAR: ESPACIO/ENTER | VOLVER: SHIFT/ESC"
+"scores.all_characters" = "Todos los personajes"
+"title.leaderboards" = "Puntuaciones"
+"scores.stage_1" = "ESCENARIO 1"
+"scores.stage_2" = "ESCENARIO 2"
+"scores.stage_3" = "ESCENARIO 3"
+"scores.stage_4" = "ESCENARIO 4"
+"scores.stage_5" = "ESCENARIO 5"
+"scores.stage_1_hard" = "ESC. 1 (DIFÍCIL)"
+"scores.stage_2_hard" = "ESC. 2 (DIFÍCIL)"
+"scores.stage_3_hard" = "ESC. 3 (DIFÍCIL)"
+"scores.stage_4_hard" = "ESC. 4 (DIFÍCIL)"
+
+"scores.heading_all_time" = "- TODOS LOS TIEMPOS -"
+
+"scores.heading_daily" = "- DIARIO -"
+
+"scores.settings_heading" = "AJUSTES"
+
+"scores.legacy_label" = "CLASIFICACIÓN: 0.7"
+
+"scores.rename" = "Cambiar nombre"
+
+"scores.show_names_label" = "Mostrar nombres"
+
+"scores.use_name_label" = "Usar nombre"
+
+"scores.delete" = "BORRAR PUNTUACIONES"
+
+"scores.rename_prompt" = "Cambiar tu nombre:"
+
+"scores.confirm" = "Confirmar"
+
+"scores.cancel" = "Cancelar"
+
+"scores.yes" = "Sí"
+
+"scores.no" = "No"
+
+"scores.weapons" = "Armas"
+
+"scores.items" = "Objetos"
+
+"scores.support" = "Apoyo"
+
+"scores.details_heading" = "- {stage} {period} -"
+
+"scores.period_all_time" = "TODOS LOS TIEMPOS"
+
+"scores.period_daily" = "DIARIO"
+

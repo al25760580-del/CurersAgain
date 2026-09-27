@@ -1,0 +1,9 @@
+schema = 1
+id = "jp"
+name = "Japanese"
+native_name = "日本語"
+text_format = "plain"
+texts = "texts.toml"
+order = 1
+fallback = "eng"
+# Translation not yet provided: uses the English pack.

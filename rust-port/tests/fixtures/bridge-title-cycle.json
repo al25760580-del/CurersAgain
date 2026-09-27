@@ -1,0 +1,250 @@
+{
+  "schema": 1,
+  "scope": "direct existing title actions, NOT keyboard emulation",
+  "native_exe_sha256": "f897d5f34228410cb74091a0278d7cd94722e0d2d194b179e4f18b009362d1c2",
+  "plugin_sha256": "641113fe57c1a1241e1323e2f71e8bf261227663668e381c65296d5929fa6945",
+  "initial": 3,
+  "final": 3,
+  "steps": [
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "7ec7dd404ca4435ebdf91b3a5ff90073",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9509,
+        "phase": "pre_input_manager_step",
+        "before": 3,
+        "after": 4,
+        "expected": 4,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "c7dcd8393d154793ba456e0ffe1bf78f",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9539,
+        "phase": "pre_input_manager_step",
+        "before": 4,
+        "after": 5,
+        "expected": 5,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "a02fc5b06e384a8f94f3eea046e8ca7e",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9570,
+        "phase": "pre_input_manager_step",
+        "before": 5,
+        "after": 6,
+        "expected": 6,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "6a69dc575647485aba54e23e07ad74a5",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9597,
+        "phase": "pre_input_manager_step",
+        "before": 6,
+        "after": 7,
+        "expected": 7,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "45465889c010436a8231f57eeb8c1489",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9627,
+        "phase": "pre_input_manager_step",
+        "before": 7,
+        "after": 0,
+        "expected": 0,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "fe1470047d1544f983476c774a802f62",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9657,
+        "phase": "pre_input_manager_step",
+        "before": 0,
+        "after": 1,
+        "expected": 1,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "b1b34e2a267b4a779634333fc10109b3",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9688,
+        "phase": "pre_input_manager_step",
+        "before": 1,
+        "after": 2,
+        "expected": 2,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectRight",
+      "observation": {
+        "protocol": 1,
+        "id": "5a4acceada9a47cc86297ee6a4ea2d57",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9719,
+        "phase": "pre_input_manager_step",
+        "before": 2,
+        "after": 3,
+        "expected": 3,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "b6f400002c384d37a740f5916c0fe12a",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9750,
+        "phase": "pre_input_manager_step",
+        "before": 3,
+        "after": 2,
+        "expected": 2,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "224a5d9e750244eea1b0342f1ab0f5d2",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9780,
+        "phase": "pre_input_manager_step",
+        "before": 2,
+        "after": 1,
+        "expected": 1,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "adfe2476e8854c9c8d4f5180c87e5bc8",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9811,
+        "phase": "pre_input_manager_step",
+        "before": 1,
+        "after": 0,
+        "expected": 0,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "b02545c1f8b7487bb18ffc440ab777dc",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9841,
+        "phase": "pre_input_manager_step",
+        "before": 0,
+        "after": 7,
+        "expected": 7,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "322592e3da4648279987d04636216d52",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9871,
+        "phase": "pre_input_manager_step",
+        "before": 7,
+        "after": 6,
+        "expected": 6,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "affc980c941547c48cb3b711cfd0e98a",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9902,
+        "phase": "pre_input_manager_step",
+        "before": 6,
+        "after": 5,
+        "expected": 5,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "144206dee3c041bc8d1be0207e250333",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9918,
+        "phase": "pre_input_manager_step",
+        "before": 5,
+        "after": 4,
+        "expected": 4,
+        "backend": "existing_game_script"
+      }
+    },
+    {
+      "action": "SelectLeft",
+      "observation": {
+        "protocol": 1,
+        "id": "e10b578ed8e649f788607b6f6cf70f62",
+        "status": "observed",
+        "room": "rm_Title",
+        "frame": 9948,
+        "phase": "pre_input_manager_step",
+        "before": 4,
+        "after": 3,
+        "expected": 3,
+        "backend": "existing_game_script"
+      }
+    }
+  ]
+}

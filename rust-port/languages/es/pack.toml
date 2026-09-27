@@ -1,0 +1,13 @@
+schema=1
+id="es"
+name="Spanish"
+native_name="Español"
+text_format="plain"
+texts="texts.toml"
+fallback="eng"
+order=3
+[font]
+custom=true
+atlas="accents.png"
+metrics="glyphs.toml"
+fallback_to_parent=true

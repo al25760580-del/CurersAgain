@@ -1,0 +1,310 @@
+# Authoring recommendations for the CURRENT port geometry. Not native input restrictions.
+# Warn only. max_chars is Unicode scalars per line; max_width is logical pixels.
+# A trailing * matches translated keys by prefix. Values are substitution examples.
+schema = 1
+
+[[rules]]
+key = "scores.check"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.my_score"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.quit"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.all_time"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.daily"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.character_*"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.stage_*"
+max_chars = 19
+max_width = 118
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.show_names"
+max_chars = 28
+max_width = 170
+max_lines = 1
+font = "main"
+[rules.values]
+value = ["$scores.on", "$scores.off"]
+
+[[rules]]
+key = "scores.use_name"
+max_chars = 28
+max_width = 170
+max_lines = 1
+font = "main"
+[rules.values]
+value = ["$scores.on", "$scores.off"]
+
+[[rules]]
+key = "scores.back"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.settings"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.local_settings"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.close"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.details"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.details_limit"
+max_chars = 35
+max_width = 210
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.heading_*"
+max_chars = 29
+max_width = 354
+max_lines = 1
+font = "big"
+
+[[rules]]
+key = "scores.offline"
+max_chars = 59
+max_width = 354
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.cooldown"
+max_chars = 59
+max_width = 354
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.read_error"
+max_chars = 59
+max_width = 354
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.no_personal"
+max_chars = 59
+max_width = 354
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.empty"
+max_chars = 59
+max_width = 354
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "scores.save_error"
+max_chars = 45
+max_width = 220
+max_lines = 1
+font = "tiny"
+
+[[rules]]
+key = "first_run.show"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.hide"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.allow"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.decline"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.start"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.restart"
+max_chars = 24
+max_width = 140
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.language"
+max_chars = 90
+max_width = 560
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.name"
+max_chars = 90
+max_width = 560
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.show_prompt"
+max_chars = 90
+max_width = 560
+max_lines = 1
+font = "main"
+
+[[rules]]
+key = "first_run.warning"
+max_chars = 90
+max_width = 560
+max_lines = 2
+font = "main"
+
+[[rules]]
+key = "first_run.consent"
+max_chars = 90
+max_width = 560
+max_lines = 5
+font = "main"
+
+[[rules]]
+key = "scores.rename"
+max_chars = 27
+max_width = 164
+font = "main"
+
+[[rules]]
+key = "scores.show_names_label"
+max_chars = 22
+max_width = 132
+font = "main"
+
+[[rules]]
+key = "scores.use_name_label"
+max_chars = 22
+max_width = 132
+font = "main"
+
+[[rules]]
+key = "scores.delete"
+max_chars = 20
+max_width = 120
+font = "main"
+
+[[rules]]
+key = "scores.confirm"
+max_chars = 10
+max_width = 65
+font = "main"
+
+[[rules]]
+key = "scores.cancel"
+max_chars = 10
+max_width = 65
+font = "main"
+
+[[rules]]
+key = "scores.yes"
+max_chars = 10
+max_width = 65
+font = "main"
+
+[[rules]]
+key = "scores.no"
+max_chars = 14
+max_width = 85
+font = "main"
+
+[[rules]]
+key = "scores.legacy_label"
+max_chars = 27
+max_width = 164
+font = "main"
+
+[[rules]]
+key="scores.disabled"
+max_chars=20
+max_width=120
+font="tiny"
+
+# Details heading spans the combined results area; warnings only.
+[[rules]]
+key="scores.details_heading"
+max_chars=40
+max_width=500
+max_lines=1
+font="big"
+[rules.values]
+stage=["$scores.stage_1"]
+period=["$scores.period_all_time","$scores.period_daily"]

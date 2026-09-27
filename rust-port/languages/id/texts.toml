@@ -1,0 +1,5 @@
+# UTF-8. Plain text, explicit \n line breaks. Whitespace is significant.
+schema = 1
+text_format = "plain"
+
+[strings]
